@@ -1,0 +1,31 @@
+{
+  "name": "node-auth1-project",
+  "version": "1.0.0",
+  "description": "## Topics",
+  "main": "server.js",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "express": "^4.17.1",
+    "knex": "^0.21.5",
+    "node": "^14.8.0",
+    "nodemon": "^2.0.4",
+    "sqlite3": "^5.0.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon server.js",
+    "server": "nodemon server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ofrepose/node-auth1-project.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Ofrepose/node-auth1-project/issues"
+  },
+  "homepage": "https://github.com/Ofrepose/node-auth1-project#readme"
+}
