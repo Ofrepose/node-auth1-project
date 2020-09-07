@@ -61,7 +61,7 @@ router.post("/api/login", async (req, res, next) => {
         req.session.user = user
         res.json({
             message: "Logged in",
-            cookie: user.id
+            cookie: req.session.user.id
         })
     } catch(err) {
         next(err)
