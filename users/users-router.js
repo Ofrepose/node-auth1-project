@@ -68,4 +68,18 @@ router.post("/api/login", async (req, res, next) => {
     }
 })
 
+router.get('/api/logout', usersMiddleware.restrict(), async (req, res, next) =>{
+    try{
+        req.session.destroy((err)=>{
+            if(err){
+                next(err)
+            }else{
+                res.status(204).end()
+            }
+        })
+    }catch (err) {
+        next(err)
+    }
+})
+
 module.exports = router
