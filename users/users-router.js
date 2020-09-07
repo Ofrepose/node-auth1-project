@@ -60,7 +60,8 @@ router.post("/api/login", async (req, res, next) => {
         }
         req.session.user = user
         res.json({
-            message: `Welcome ${user.username}!`,
+            message: "Logged in",
+            cookie: user.id
         })
     } catch(err) {
         next(err)
