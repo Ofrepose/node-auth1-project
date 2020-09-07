@@ -8,12 +8,38 @@ const bcrypt = require("bcryptjs");
 
 const session = require("express-session");
 
-async function protected(req,res,next){
-    console.log(`inside protected the req.session.username is ${req.session.user} and the req.session is ${req.session}`)
-    if(req.session && req.session.user){
-        next();
-    }else{
-        res.status(401).json({message:'You shall not pass!'})
+function restrict(){
+    const authError = {
+        message:"Invalid Credentials",
+    }
+    return async (req, res, next)=>{
+        try{
+            const {username, password} = req.headers
+
+            //make sure the values are not empty
+            if (!username || !password){
+                return res.status(401).json(authError)
+            }
+
+            const user = await db.findBy({username}).first()
+            // make sure user exists
+            if (!user){
+                return res.status(401).json(authError)
+            }
+
+            const passwordValid = await bcrypt.compare(password, user.password)
+
+            if(!passwordValid){
+                return res.status(401).json(authError)
+            }
+
+            //if we reach this point we know the user is auth
+            next();
+
+        }catch (err) {
+            next(err)
+        }
+
     }
 }
 
@@ -49,17 +75,18 @@ server.post('/api/register', (req,res)=>{
         .catch(err=>{res.status(500).json({message: err})});
 })
 
-server.post('/api/login', (req, res)=>{
+server.post('/api/login', async (req, res)=>{
     let {username, password} = req.body;
     console.log({username});
     console.log({password});
-    db.findByUsername({username})
+    await db.findByUsername({username})
         .first()
         .then(user=>{
             console.log(user.password)
             if(user && bcrypt.compareSync(password, user.password)){
-                req.session.user= user.username
-                res.status(200).json({message: 'logging in', cookie:req.session.id})
+                // req.session = user
+                req.session.username = user.username
+                res.status(200).json({message: 'logging in', cookie:req.session})
             }else{
                 res.status(401).json({message:'You shall not pass!'})
             }
@@ -67,8 +94,8 @@ server.post('/api/login', (req, res)=>{
         .catch(err=>{res.status(500).json({message:err})})
 })
 
-server.get('/api/users', protected, (req,res)=>{
-    db('users')
+server.get('/api/users', restrict(), (req,res)=>{
+    db.getAllUsers()
         .then(users=>res.json(users))
         .catch(err=> res.json(err))
 })

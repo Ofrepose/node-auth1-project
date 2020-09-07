@@ -6,6 +6,7 @@ module.exports = {
     createUser,
     findByUsername,
     getAllUsers,
+    findBy
 };
 
 
@@ -25,4 +26,10 @@ function findByUsername(user){
 
 function getAllUsers(){
     return db('users').select('*')
+}
+
+function findBy(filter) {
+    return db("users")
+        .select("id", "username", "password")
+        .where(filter)
 }
